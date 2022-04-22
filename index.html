@@ -1,10 +1,253 @@
+<!DOCTYPE html>
+<html>
 <head>
-	<title>Blockly Scala for Data Science</title>
-		<!-- link to main stylesheet -->
-		<link rel="stylesheet" type="text/css" href="/css/main.css">
-  
+  <meta charset="utf-8">
+  <title>Blockly Demo: Generating Scala</title>
+  <script src="blockly_compressed.js"></script>
+  <script src="blocks_compressed.js"></script>
+  <script src="javascript_compressed.js"></script>
+  <script src="python_compressed.js"></script>
+  <script src="msg/js/en.js"></script>
+  <style>
+    /* specify div as grid layout*/
+    .grid-container {
+      display: grid;
+      grid: 480px / 50% 50%;
+      grid-gap = 5px;
+    }
+
+    .grid-container > div {
+      border: 1px outset green;
+    }
+    
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
 </head>
 <body>
-	Test
-  Blockly Scala programming for big data analytics, machine learning, and data science applicaitons.
+  <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+    <a href="../index.html">Demos</a> &gt; Generating Scala</h1>
+
+  <p>This is a simple demo of generating code from blocks and running
+  the code in a Spark shell.</p>
+
+  <p>&rarr; More info on <a href="https://developers.google.com/blockly/guides/configure/web/code-generators">Code Generators</a> and <a href="https://developers.google.com/blockly/guides/app-integration/running-javascript">Running Scala</a>.</p>
+
+  <p>
+    <button onclick="showCode()">Show Scala</button>
+    <button onclick="runCode()">Run Scala</button>
+  </p>
+  <div class="grid-container">
+    <div id="blocklyDiv"></div>
+    <div id="codeDiv" ></div>
+  </div>
+  <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+    <category name="Data" colour="100" custom="DATA">
+    </category>
+    <category name="Machine Learning" colour="150" custom="ML"></category>
+    <category name="Plot" colour="250" custom="PLOT"></category>
+    <category name="Examples" colour="200" custom="EXAMPLES">
+      
+    </category>
+    <category name="Variables" colour="330" custom="VARIABLE"></category>
+    <category name="Functions" colour="290" custom="PROCEDURE"></category>
+    <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <block type="words_count"></block>
+      <block type="load_file"></block>
+    </category>
+    <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+    </category>
+    <category name="Math" colour="%{BKY_MATH_HUE}">
+      <block type="math_number">
+        <field name="NUM">123</field>
+      </block>
+      <block type="math_arithmetic"></block>
+      <block type="math_single"></block>
+    </category>
+    <category name="Text" colour="%{BKY_TEXTS_HUE}">
+      <block type="text"></block>
+      <block type="text_length"></block>
+      <block type="text_print"></block>
+    </category>
+  </xml>
+
+  <xml xmlns="https://developers.google.com/blockly/xml" id="startBlocks" style="display: none">
+    <block type="controls_if" inline="false" x="20" y="20">
+      <mutation else="1"></mutation>
+      <value name="IF0">
+        <block type="logic_compare" inline="true">
+          <field name="OP">EQ</field>
+          <value name="A">
+            <block type="math_arithmetic" inline="true">
+              <field name="OP">MULTIPLY</field>
+              <value name="A">
+                <block type="math_number">
+                  <field name="NUM">6</field>
+                </block>
+              </value>
+              <value name="B">
+                <block type="math_number">
+                  <field name="NUM">7</field>
+                </block>
+              </value>
+            </block>
+          </value>
+          <value name="B">
+            <block type="math_number">
+              <field name="NUM">42</field>
+            </block>
+          </value>
+        </block>
+      </value>
+      <statement name="DO0">
+        <block type="text_print" inline="false">
+          <value name="TEXT">
+            <block type="text">
+              <field name="TEXT">Don't panic</field>
+            </block>
+          </value>
+        </block>
+      </statement>
+      <statement name="ELSE">
+        <block type="text_print" inline="false">
+          <value name="TEXT">
+            <block type="text">
+              <field name="TEXT">Panic</field>
+            </block>
+          </value>
+        </block>
+      </statement>
+    </block>
+  </xml>
+
+  <script>
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+        {media: 'media/',
+         toolbox: document.getElementById('toolbox')});
+    
+    Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),
+                               demoWorkspace);
+// Callback for the added Data category. Returns an array of block objects.
+var dataFlyoutCallback = function(workspace) {
+  // Returns an array of hex colours, e.g. ['#4286f4', '#ef0447']
+  var blockList = [];
+    blockList.push({
+      'kind': 'block',
+      'type': 'load_file',
+    });
+  
+  return blockList;
+};
+// Associates the function with the string 'DATA' category click callback
+demoWorkspace.registerToolboxCategoryCallback(
+    'DATA', dataFlyoutCallback);
+
+// Callback for the added Machine Learning category. Returns an array of block objects.
+var mlFlyoutCallback = function(workspace) {
+  // Returns an array of hex colours, e.g. ['#4286f4', '#ef0447']
+  var blockList = [];
+    blockList.push({
+      'kind': 'block',
+      'type': 'words_count',
+    });
+  
+  return blockList;
+};
+// Associates the function with the string 'DATA' category click callback
+demoWorkspace.registerToolboxCategoryCallback(
+    'ML', mlFlyoutCallback);
+    
+    
+
+    function showCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      // var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      //var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      //alert(code);
+      var code = `
+/** load file */ <br>
+var tf = sc.textFile(\"README.md\"); <br><br>
+
+/** Words Count Example */ <br>
+/** map */ <br>
+var map = tf.flatMap(line => line.split(\" \")).map(word => (word,1));
+<br><br> 
+/** reduce */ <br>
+var counts = map.reduceByKey(_ + _);`
+
+      code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      document.getElementById('codeDiv').innerHTML = code;
+    }
+    
+// code generator for load_file block 
+Blockly.JavaScript['load_file'] = function(block) {
+  var input = Blockly.JavaScript.valueToCode(block, 'INPUT', Blockly.JavaScript.ORDER_NUMBER);
+  // TODO: Assemble JavaScript into code variable.
+  var code = input + ' Here;\n';
+  return code;
+};
+    
+    function runCode() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP =
+          'if (--window.LoopTrap === 0) throw "Infinite loop.";\n';
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      try {
+        eval(code);
+      } catch (e) {
+        alert(e);
+      }
+    }
+// user defined blocks
+    Blockly.Blocks['words_count'] = {
+      init: function() {
+      this.appendDummyInput().appendField('Words Count Example');
+      this.setPreviousStatement(true);
+      this.setNextStatement(true);
+      //this.setOutput(true, 'Number');
+      this.setColour(200);
+      this.setTooltip('Returns number of letters in the provided text.');
+      this.setHelpUrl('http://www.w3schools.com/jsref/jsref_length_string.asp');
+      }
+    };
+
+  Blockly.Blocks['load_file'] = {
+  init: function() {
+    this.appendValueInput("LOADFILE")
+        .setCheck("String")
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("Load File");
+    this.setNextStatement(true, "RDD");
+    this.setColour(0);
+     this.setTooltip("Load a dataset in CSV format");
+     this.setHelpUrl("project URL");
+  }
+};
+    
+
+  </script>
+
 </body>
+</html>
