@@ -7,6 +7,7 @@
   <script src="blocks_compressed.js"></script>
   <script src="javascript_compressed.js"></script>
   <script src="python_compressed.js"></script>
+  <script src="scala_compressed.js"></script>
   <script src="msg/js/en.js"></script>
   <style>
     /* specify div as grid layout*/
@@ -34,7 +35,7 @@
   <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
   Generating Scala</h1>
 
-  <p>This is a simple demo of generating code from blocks and running
+  <p>This is a program (under development) of generating Scala code from blocks and running
   the code in a Spark shell.</p>
 
   <p>&rarr; More info on <a href="https://developers.google.com/blockly/guides/configure/web/code-generators">Code Generators</a> and <a href="https://developers.google.com/blockly/guides/app-integration/running-javascript">Running Scala</a>.</p>
@@ -180,7 +181,7 @@ demoWorkspace.registerToolboxCategoryCallback(
 
     function showCode() {
       // Generate JavaScript code and display it.
-      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      Blockly.Scala.INFINITE_LOOP_TRAP = null;
       // var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
       //var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
       //alert(code);
@@ -195,15 +196,15 @@ var map = tf.flatMap(line => line.split(\" \")).map(word => (word,1));
 /** reduce */ <br>
 var counts = map.reduceByKey(_ + _);`
 
-      //code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
-      document.getElementById('codeDiv').innerHTML = code;
+      code = Blockly.Scala.workspaceToCode(demoWorkspace);
+      document.getElementById('codeDiv').innerText = code;
     }
     
 // code generator for load_file block 
-Blockly.JavaScript['load_file'] = function(block) {
-  var input = Blockly.JavaScript.valueToCode(block, 'INPUT', Blockly.JavaScript.ORDER_NUMBER);
+Blockly.Scala['load_file'] = function(block) {
+  var input = Blockly.Scala.valueToCode(block, 'FILENAME', Blockly.Scala.ORDER_NONE);
   // TODO: Assemble JavaScript into code variable.
-  var code = input + ' Here;\n';
+  var code = 'sc.textFile('+input + ')\n';
   return code;
 };
     
@@ -233,19 +234,20 @@ Blockly.JavaScript['load_file'] = function(block) {
       }
     };
 
-  Blockly.Blocks['load_file'] = {
+    Blockly.Blocks['load_file'] = {
   init: function() {
-    this.appendValueInput("LOADFILE")
+    this.appendValueInput("FILENAME")
         .setCheck("String")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Load File");
-    this.setNextStatement(true, "RDD");
-    this.setColour(0);
-     this.setTooltip("Load a dataset in CSV format");
-     this.setHelpUrl("project URL");
+        .appendField("load CSV file");
+    this.setInputsInline(false);
+    this.setOutput(true, "VALUE");
+    this.setColour(180);
+ this.setTooltip("load a CSV file");
+ this.setHelpUrl("");
   }
 };
-    
+
+     
 
   </script>
 
