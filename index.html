@@ -205,7 +205,7 @@ Blockly.Scala['load_file'] = function(block) {
   var input = Blockly.Scala.valueToCode(block, 'FILENAME', Blockly.Scala.ORDER_NONE);
   // TODO: Assemble JavaScript into code variable.
   var code = 'sc.textFile('+input + ')\n';
-  return code;
+  return [code, Blockly.Scala.ORDER_FUNCTION_CALL];
 };
     
     function runCode() {
@@ -238,14 +238,16 @@ Blockly.Scala['load_file'] = function(block) {
   init: function() {
     this.appendValueInput("FILENAME")
         .setCheck("String")
-        .appendField("load CSV file");
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField("load file");
     this.setInputsInline(false);
-    this.setOutput(true, "VALUE");
+    this.setOutput(true, "String");
     this.setColour(180);
- this.setTooltip("load a CSV file");
- this.setHelpUrl("");
+ this.setTooltip("help");
+ this.setHelpUrl("kennesaw.edu");
   }
 };
+  
 
      
 

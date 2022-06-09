@@ -10,6 +10,7 @@
  */
 'use strict';
 
+
 goog.module('Blockly.Python');
 goog.module.declareLegacyNamespace();
 
